@@ -11,12 +11,15 @@ module V1
 
       @contatcs = Contact.all.page(page_number).per(per_page)
 
-      render json: @contacts #, methods: :birthdate_br # [:hello, :i18n]
+      # Cache-Control --- expires_in 30.seconds, public: true
+      if stale?(etag: @contacts)
+        render json: @contacts #, methods: :birthdate_br # [:hello, :i18n]
+      end
     end
 
     # GET /contacts/1
     def show
-      render json: @contact, include: [:kind, :address, :phones] #, meta: { author: "Filipe Gabriel Rocha" } #, include: [:kind, :phones, :address] #, include: :kind
+      render json: @contact #, include: [:kind, :address, :phones] #, meta: { author: "Filipe Gabriel Rocha" } #, include: [:kind, :phones, :address] #, include: :kind
     end
 
     # POST /contacts
